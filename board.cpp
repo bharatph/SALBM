@@ -8,16 +8,27 @@ using namespace std;
 class Board {
 	private:
 		int pR, pC;
+		int r, c;
 		char board[MAX_SIZ][MAX_SIZ];
 		vector<int> rolls;
 		void winStub(vector<int> rolls){}
+		void snakeStub(int tr, int ct, int sr, int sc){}
+		void ladderStub(int tr, int ct, int sr, int sc){}
 	public:
 		void (*onWin)(vector<int>);
+		void (*onSnake)(int tr, int ct, int sr, int sc);
+		void (*onLadder)(int tr, int ct, int sr, int sc);
+		void setDimension(int r, int c){
+			this->r = r;
+			this->c = c;
+		}
 		Board(int r, int c){
-			pR = pC = 0;
-			//assigning stubs
+			setDimension(r, c);
+			pR = r - 1;
+			pC = c - 1;
+			//TODO assigning stubs
 			//onWin = winStub;
-
+			//onSnake = snakeStub;
 		}
 		void setCell(int r, int c, char val){
 			board[r][c] = val;
@@ -25,11 +36,27 @@ class Board {
 		void roll(int rollVal){
 			//update rolls
 			rolls.push_back(rollVal);
-			//calculate pR and pC using rollVal, pR and pC
-			if(pR == pC == 0){
+			//TODO calculate pR and pC using rollVal, pR and pC
+			pR = r - (rollVal % r) - 1;
+			pC = rollVal % c;
+			if(board[pR][pC] == 'S'){
+				//calculate source and destination
+				int dR = 0;
+				int dC = 0;
+				//TODO calculate destination
+				onSnake(dR, dC, pR, pC);
+			} else if(board[pR][pC] == 'L'){
+				//calculate source and destination
+				int dR = 0;
+				int dC = 0;
+				//TODO calculate destination
+				onLadder(dR, dR, pR, pC);
+			}
+			if(pR == 0 && pC == 0){
 				onWin(rolls);
 			}
 		}
+		
 };
 
 void win(vector<int> rolls){
@@ -40,6 +67,8 @@ void win(vector<int> rolls){
 }
 
 
+
+
 int main(int argc, char *argv[]){
 	int r, c, i, j;
 //get r and c
@@ -47,11 +76,13 @@ int main(int argc, char *argv[]){
 
 //board creation
 	Board b(r, c);
+//assign handlers
+	b.onWin = win;
 
 //get vals for board
 	for(i = 0; i < r; i++){
 		for(j = 0; j < c; j++){
-			int val = 0;
+			char val = 0;
 			cin >> val;
 			b.setCell(r, c, val);
 		}
@@ -64,5 +95,4 @@ int main(int argc, char *argv[]){
 	for(i = 0; i < rollLen; i++){
 		b.roll(rolls[i]);
 	}
-	b.onWin = win;
 }
