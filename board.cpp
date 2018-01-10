@@ -71,15 +71,13 @@ void win(vector<int> rolls){
 
 int main(int argc, char *argv[]){
 	int r, c, i, j;
-//get r and c
+	//get r and c
 	cin >> r >> c;
-
-//board creation
+	//board creation
 	Board b(r, c);
-//assign handlers
+	//assign handlers
 	b.onWin = win;
-
-//get vals for board
+	//get vals for board
 	for(i = 0; i < r; i++){
 		for(j = 0; j < c; j++){
 			char val = 0;
@@ -89,8 +87,10 @@ int main(int argc, char *argv[]){
 	}
 
 //get vals for dice rolling
-	int rolls[] = { 4, 5, 2, 1, 1, 6 };
-	int rollLen = sizeof(rolls)/sizeof(int);
+	int rolls[100];
+	i = 0;
+	while(cin >> rolls[i++]);
+	int rollLen = i;
 //print dice roll sequence required
 	for(i = 0; i < rollLen; i++){
 		b.roll(rolls[i]);
